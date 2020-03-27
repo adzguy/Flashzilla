@@ -13,16 +13,16 @@ struct ContentView: View {
     @State private var finalAmount: Angle = .degrees(0)
     
     var body: some View {
-        Text("Hello, World!")
-            .rotationEffect(finalAmount + currentAmount)
-        .gesture(
-            RotationGesture()
-                .onChanged { (angle) in
-                    self.currentAmount = angle
+        VStack {
+            Text("Hello, World!")
+                .onTapGesture {
+                    print("Text tapped")
                 }
-                .onEnded { (amount) in
-                    self.finalAmount += self.currentAmount
-                    self.currentAmount = .degrees(0)
+        }
+        .highPriorityGesture(
+            TapGesture()
+                .onEnded { _ in
+                    print("VStack tapped")
                 }
         )
     }
