@@ -10,30 +10,52 @@ import SwiftUI
 import CoreHaptics
 
 struct ContentView: View {
+    @Environment(\.accessibilityDifferentiateWithoutColor) var differentiateWithoutColor
 
     var body: some View {
-        Text("Hello, World!")
-            .onReceive(NotificationCenter.default.publisher(for: UIApplication.userDidTakeScreenshotNotification)){ _ in
-                print("User took screenshot!")
-                
+        HStack {
+            if differentiateWithoutColor {
+                Image(systemName: "checkmark.circle")
             }
-            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)){ _ in
-                print("Moving to the background!")
-                
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                print("Moving back to the foreground!")
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIApplication.significantTimeChangeNotification)) { _ in
-                print("when the user changes their clock or when daylight savings time changes!")
-            }
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidShowNotification)) { _ in
-                print("when the keyboard is shown!")
-            }
-        
+
+            Text("Success")
+        }
+        .padding()
+        .background(differentiateWithoutColor ? Color.black : Color.green)
+        .foregroundColor(Color.white)
+        .clipShape(Capsule())
     }
 }
 
+//struct ContentView: View {
+//    @Environment(\.accessibilityReduceMotion) var reduceMotion
+//    @State private var scale: CGFloat = 1
+//
+//    var body: some View {
+//        Text("Hello, World!")
+//            .scaleEffect(scale)
+//            .onTapGesture {
+//                if self.reduceMotion {
+//                    self.scale *= 1.5
+//                } else {
+//                    withAnimation {
+//                        self.scale *= 1.5
+//                    }
+//                }
+//            }
+//    }
+//}
+
+//struct ContentView: View {
+//    @Environment(\.accessibilityReduceTransparency) var reduceTransparency
+//    var body: some View {
+//        Text("Hello, World!")
+//            .padding()
+//            .background(reduceTransparency ? Color.black : Color.black.opacity(0.5))
+//            .foregroundColor(Color.white)
+//            .clipShape(Capsule())
+//    }
+//}
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
