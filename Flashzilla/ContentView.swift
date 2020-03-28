@@ -10,52 +10,35 @@ import SwiftUI
 import CoreHaptics
 
 struct ContentView: View {
-    @Environment(\.accessibilityDifferentiateWithoutColor) var differentiateWithoutColor
-
+    @State private var cards = [Card](repeating: Card.example, count: 10)
+    
     var body: some View {
-        HStack {
-            if differentiateWithoutColor {
-                Image(systemName: "checkmark.circle")
+        ZStack {
+            Image("background")
+                .resizable()
+                .scaledToFill()
+                .edgesIgnoringSafeArea(.all)
+            
+            VStack {
+                ZStack {
+                    ForEach(0..<cards.count, id: \.self) { index in
+                        CardView(card: self.cards[index])
+                            .stacked(at: index, in: self.cards.count)
+                    }
+                }
             }
 
-            Text("Success")
         }
-        .padding()
-        .background(differentiateWithoutColor ? Color.black : Color.green)
-        .foregroundColor(Color.white)
-        .clipShape(Capsule())
     }
 }
 
-//struct ContentView: View {
-//    @Environment(\.accessibilityReduceMotion) var reduceMotion
-//    @State private var scale: CGFloat = 1
-//
-//    var body: some View {
-//        Text("Hello, World!")
-//            .scaleEffect(scale)
-//            .onTapGesture {
-//                if self.reduceMotion {
-//                    self.scale *= 1.5
-//                } else {
-//                    withAnimation {
-//                        self.scale *= 1.5
-//                    }
-//                }
-//            }
-//    }
-//}
+extension View {
+    func stacked(at position: Int, in total: Int) -> some View {
+        let offset = CGFloat(total - position)
+        return self.offset(CGSize(width: 0, height: offset * 10))
+    }
+}
 
-//struct ContentView: View {
-//    @Environment(\.accessibilityReduceTransparency) var reduceTransparency
-//    var body: some View {
-//        Text("Hello, World!")
-//            .padding()
-//            .background(reduceTransparency ? Color.black : Color.black.opacity(0.5))
-//            .foregroundColor(Color.white)
-//            .clipShape(Capsule())
-//    }
-//}
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()

@@ -13,6 +13,8 @@
 		2589CB88242E2D4400342428 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2589CB87242E2D4400342428 /* Assets.xcassets */; };
 		2589CB8B242E2D4400342428 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2589CB8A242E2D4400342428 /* Preview Assets.xcassets */; };
 		2589CB8E242E2D4400342428 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2589CB8C242E2D4400342428 /* LaunchScreen.storyboard */; };
+		25DCB26F242EFEE8002D34E3 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DCB26E242EFEE8002D34E3 /* Card.swift */; };
+		25DCB271242EFF29002D34E3 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DCB270242EFF29002D34E3 /* CardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		2589CB8A242E2D4400342428 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2589CB8D242E2D4400342428 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2589CB8F242E2D4400342428 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		25DCB26E242EFEE8002D34E3 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		25DCB270242EFF29002D34E3 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +63,8 @@
 				2589CB81242E2D3F00342428 /* AppDelegate.swift */,
 				2589CB83242E2D3F00342428 /* SceneDelegate.swift */,
 				2589CB85242E2D3F00342428 /* ContentView.swift */,
+				25DCB270242EFF29002D34E3 /* CardView.swift */,
+				25DCB26E242EFEE8002D34E3 /* Card.swift */,
 				2589CB87242E2D4400342428 /* Assets.xcassets */,
 				2589CB8C242E2D4400342428 /* LaunchScreen.storyboard */,
 				2589CB8F242E2D4400342428 /* Info.plist */,
@@ -149,6 +155,8 @@
 				2589CB82242E2D3F00342428 /* AppDelegate.swift in Sources */,
 				2589CB84242E2D3F00342428 /* SceneDelegate.swift in Sources */,
 				2589CB86242E2D3F00342428 /* ContentView.swift in Sources */,
+				25DCB26F242EFEE8002D34E3 /* Card.swift in Sources */,
+				25DCB271242EFF29002D34E3 /* CardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
