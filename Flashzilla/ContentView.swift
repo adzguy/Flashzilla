@@ -10,20 +10,27 @@ import SwiftUI
 import CoreHaptics
 
 struct ContentView: View {
-    let timer = Timer.publish(every: 1, tolerance: 0.5, on: .main, in: .common).autoconnect()
-    @State private var counter = 0
 
     var body: some View {
         Text("Hello, World!")
-            .onReceive(timer) { time in
-                if self.counter == 5 {
-                    self.timer.upstream.connect().cancel()
-                } else {
-                    print("The time is now \(time)")
-                }
-
-                self.counter += 1
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.userDidTakeScreenshotNotification)){ _ in
+                print("User took screenshot!")
+                
             }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)){ _ in
+                print("Moving to the background!")
+                
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                print("Moving back to the foreground!")
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.significantTimeChangeNotification)) { _ in
+                print("when the user changes their clock or when daylight savings time changes!")
+            }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidShowNotification)) { _ in
+                print("when the keyboard is shown!")
+            }
+        
     }
 }
 
