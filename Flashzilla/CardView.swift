@@ -14,12 +14,21 @@ struct CardView: View {
     @Environment(\.accessibilityEnabled) var accessibilityEnabled
     
     let card: Card
-    
-    var removal: (() -> Void)? = nil
+    var removal: ((Bool) -> Void)? = nil
     
     @State private var isShowingAnswer = false
     @State private var offset = CGSize.zero
     @State private var feedback = UINotificationFeedbackGenerator()
+    
+    func fill(for offset: CGSize) -> Color {
+        if offset.width == 0 {
+            return .white
+        } else if offset.width > 0 {
+            return .green
+        } else {
+            return .red
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -75,13 +84,26 @@ struct CardView: View {
                 }
 
                 .onEnded { _ in
-                    if self.offset.width > 0 {
-                        self.feedback.notificationOccurred(.success)
-                    } else {
-                        self.feedback.notificationOccurred(.error)
-                    }
+                    if abs(self.offset.width) > 100 {
+                        
+                        if self.offset.width > 0 {
+                            
+                            self.feedback.notificationOccurred(.success)
+                            
+                        } else {
+                            
+                            self.feedback.notificationOccurred(.error)
+                            
+                        }
 
-                    self.removal?()
+                        self.removal?(self.offset.width > 0)
+                        
+                    } else {
+                        
+                        self.offset = .zero
+                        
+                    }
+                    
                 }
         )
     }

@@ -9,15 +9,21 @@
 import SwiftUI
 import CoreHaptics
 
+enum ActiveSheet {
+    case addCard, settings
+}
+
 struct ContentView: View {
     
     @Environment(\.accessibilityDifferentiateWithoutColor) var differentiateWithoutColor
     @Environment(\.accessibilityEnabled) var accessibilityEnabled
     
     @State private var cards = [Card]()
-    @State private var showingEditScreen = false
+    @State private var showingSheet = false
+    @State private var activeSheet: ActiveSheet = .addCard
+    @State private var appendWrongCard = false
     
-    @State private var timeRemaining = 100
+    @State private var timeRemaining = 5
     @State private var isActive = true
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
@@ -31,31 +37,48 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
-                Text("Time: \(timeRemaining)")
-                    .font(.largeTitle)
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 5)
-                    .background(
-                        Capsule()
-                            .fill(Color.black)
-                            .opacity(0.75)
-                    )
-                ZStack {
-                    ForEach(0..<cards.count, id: \.self) { index in
-                        CardView(card: self.cards[index]) {
-                           withAnimation {
-                               self.removeCard(at: index)
-                           }
+                if timeRemaining > 0 {
+
+                    Text("Time: \(timeRemaining)")
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 5)
+                        .background(
+                            Capsule()
+                                .fill(Color.black)
+                                .opacity(0.75)
+                        )
+                    ZStack {
+                        ForEach(0..<cards.count, id: \.self) { index in
+                            CardView(card: self.cards[index]) { success in
+                               withAnimation {
+                                   self.removeCard(at: index, success: success)
+                               }
+                            }
+                            .stacked(at: index, in: self.cards.count)
+                            .allowsHitTesting(index == self.cards.count - 1)
+                            .accessibility(hidden: index < self.cards.count - 1)
                         }
-                        .stacked(at: index, in: self.cards.count)
-                        .allowsHitTesting(index == self.cards.count - 1)
-                        .accessibility(hidden: index < self.cards.count - 1)
                     }
+                    //.allowsHitTesting(timeRemaining > 0)
+                    
+                } else {
+                    
+                    Text("Time is Up")
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 5)
+                        .background(
+                            Capsule()
+                                .fill(Color.black)
+                                .opacity(0.75)
+                        )
+                        .padding()
                 }
-                .allowsHitTesting(timeRemaining > 0)
                 
-                if cards.isEmpty {
+                if cards.isEmpty || timeRemaining <= 0 {
                     Button("Start Again", action: resetCards)
                         .padding()
                         .background(Color.white)
@@ -66,10 +89,20 @@ struct ContentView: View {
             
             VStack {
                 HStack {
+                    Button(action: {
+                        self.showingSheet = true
+                        self.activeSheet = .settings
+                    }) {
+                        Image(systemName: "gear")
+                            .padding()
+                            .background(Color.black.opacity(0.7))
+                            .clipShape(Circle())
+                    }
                     Spacer()
 
                     Button(action: {
-                        self.showingEditScreen = true
+                        self.showingSheet = true
+                        self.activeSheet = .addCard
                     }) {
                         Image(systemName: "plus.circle")
                             .padding()
@@ -91,7 +124,7 @@ struct ContentView: View {
                     HStack {
                         Button(action: {
                             withAnimation {
-                                self.removeCard(at: self.cards.count - 1)
+                                self.removeCard(at: self.cards.count - 1, success: false)
                             }
                         }) {
                             Image(systemName: "xmark.circle")
@@ -105,7 +138,7 @@ struct ContentView: View {
 
                         Button(action: {
                             withAnimation {
-                                self.removeCard(at: self.cards.count - 1)
+                                self.removeCard(at: self.cards.count - 1, success: true)
                             }
                         }) {
                             Image(systemName: "checkmark.circle")
@@ -136,24 +169,33 @@ struct ContentView: View {
                 self.timeRemaining -= 1
             }
         }
-        .sheet(isPresented: $showingEditScreen, onDismiss: resetCards) {
-            EditCards()
+        .sheet(isPresented: $showingSheet, onDismiss: resetCards) {
+            if self.activeSheet == .addCard {
+                EditCards()
+            } else {
+                SettingsView(appendWrongCards: self.$appendWrongCard)
+            }
         }
         .onAppear(perform: resetCards)
     }
     
-    func removeCard(at index: Int) {
+    func removeCard(at index: Int, success: Bool) {
         guard index >= 0 else { return }
         
-        cards.remove(at: index)
+        let card = cards.remove(at: index)
         
+        if !success && appendWrongCard {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.cards.insert(card, at: 0)
+            }
+        }
         if cards.isEmpty {
             isActive = false
         }
     }
     
     func resetCards() {
-        timeRemaining = 100
+        timeRemaining = 5
         isActive = true
         loadData()
     }
